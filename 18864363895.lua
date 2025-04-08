@@ -81,7 +81,7 @@ CombatSection:AddButton("Kill All Infected", function()
                 end
                 task.wait(.05)
                 pcall(function()
-                    Character.HumanoidRootPart.CFrame = CFrame.new(TargetCharacter.Torso.Position + Vector3.new(1,0,0))
+                    Character.HumanoidRootPart.CFrame = CFrame.new(TargetCharacter.Torso.Position + Vector3.new(1,1,0))
                     local Tool = Character:FindFirstChildWhichIsA('Tool');
                     Tool.Remote.Hit:FireServer(TargetCharacter.HumanoidRootPart, TargetCharacter.Humanoid, TargetCharacter.HumanoidRootPart.Position)
                 end)
@@ -105,7 +105,7 @@ CombatSection:AddButton("(Dodgy) Infect All", function()
                     Character.HumanoidRootPart.CFrame = TCharacter.HumanoidRootPart.CFrame + -TCharacter.HumanoidRootPart.CFrame.LookVector
                     Character.Grab.Remote.Hit:FireServer(TCharacter.HumanoidRootPart, TCharacter.Humanoid, TCharacter.HumanoidRootPart.Position)
                 end)
-            until TCharacter.Humanoid.Health < 0 or TCharacter == nil or TPlayer.Team == Teams.Transfured or Character.Humanoid.Health < 0
+            until TCharacter.Humanoid.Health < 0 or TPlayer.Team == Teams.Transfured or Character.Humanoid.Health < 0 or LocalPlayer.Team ~= Teams.Transfured or TCharacter == nil or TPlayer == nil
         end
     end
 end)
