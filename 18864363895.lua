@@ -90,6 +90,26 @@ CombatSection:AddButton("Kill All Infected", function()
     end
 end)
 
+CombatSection:AddButton("(Dodgy) Infect All", function()
+    if LocalPlayer.Team ~= Teams.Transfured then return end
+    for _, TPlayer in next, Players:GetPlayers() do
+        if Character.Humanoid.Health < 0 then break end
+        if TPlayer.Team == Teams.Human then
+            local TCharacter = TPlayer.Character
+            if Character:FindFirstChild("Grab") == nil then
+                LocalPlayer.Backpack.Grab.Parent = Character
+            end
+            repeat
+                task.wait()
+                pcall(function()
+                    Character.HumanoidRootPart.CFrame = TCharacter.HumanoidRootPart.CFrame + -TCharacter.HumanoidRootPart.CFrame.LookVector
+                    Character.Grab.Remote.Hit:FireServer(TCharacter.HumanoidRootPart, TCharacter.Humanoid, TCharacter.HumanoidRootPart.Position)
+                end)
+            until TCharacter.Humanoid.Health < 0 or TCharacter == nil or TPlayer.Team == Teams.Transfured or Character.Humanoid.Health < 0
+        end
+    end
+end)
+
 UtilityCharSection:AddButton("Remove Jump Cooldown", function()
     if LocalPlayer.PlayerGui:FindFirstChild("JumpCooldown") ~= nil then
         LocalPlayer.PlayerGui:FindFirstChild("JumpCooldown"):Destroy()
@@ -108,6 +128,27 @@ UtilityMapSection:AddButton("Remove KillGate", function()
     if workspace:FindFirstChild('KillField') ~= nil then
         workspace:FindFirstChild('KillField'):Destroy()
     end
+end)
+
+local SpamOpenEnabled = false;
+UtilityMapSection:AddToggle("Spam Open Doors", false, function(ToggleEnabled)
+    if not ToggleEnabled then SpamOpenEnabled = false return end
+    SpamOpenEnabled = true
+
+    task.spawn(function()
+        while SpamOpenEnabled do
+            task.wait(1)
+            for _, Object in next, workspace:GetChildren() do
+                if Object.Name == "Automatic Door2" then
+                    local OldSensorSize = Object.Sensor.Size
+                    Object.Sensor.Size = Vector3.new(2048, 2048, 2048)
+                    task.delay(.1, function()
+                        Object.Sensor.Size = OldSensorSize
+                    end)
+                end
+            end
+        end
+    end)
 end)
 
 LocalPlayer.CharacterAdded:Connect(function(NewCharacter)
